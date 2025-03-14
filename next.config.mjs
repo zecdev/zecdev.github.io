@@ -12,7 +12,11 @@ const nextConfig = {
   // distDir: "build"
 }
 const withNextra = nextra({
-  // ... other Nextra config options
+  readingTime: true,
+  latex: true,
+  search: {
+    codeblocks: false
+  },
 })
  
 export default withNextra(nextConfig)
