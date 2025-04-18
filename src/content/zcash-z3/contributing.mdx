@@ -6,3 +6,46 @@ GitHub: https://github.com/zcash/wallet
 
 Currently the Zallet team is developing the RPC API of the wallet. There are a 
 lot of issues to grab and contribute!
+
+
+## Zaino 
+
+GitHub: https://github.com/zingolabs/zaino
+
+Zaino is an indexer for the Zcash blockchain implemented in Rust.
+
+Zaino provides all necessary functionality for "light" clients (wallets and other 
+applications that don't rely on the complete history of blockchain) and "full" 
+clients / wallets and block explorers providing access to both the finalized chain
+and the non-finalized best chain and mempool held by either a Zebra or Zcashd 
+full validator.
+
+## Zebra
+
+GitHub: https://github.com/ZcashFoundation/zebra
+
+[Zebra](https://zebra.zfnd.org/) is a Zcash full-node written in Rust.  
+Zebra implements all the features required to reach Zcash network consensus, 
+and the network stack is interoperable with zcashd. [Here](https://docs.rs/zebrad/latest/zebrad/index.html#zebra-advantages) 
+are some benefits of Zebra.  
+Zebra validates blocks and transactions, but needs extra software to generate them:
+
+* To generate transactions, [run Zebra with lightwalletd](https://zebra.zfnd.org/user/lightwalletd.html).  
+* To generate blocks, use a mining pool or miner with Zebra's mining JSON-RPCs. Currently Zebra can only send mining rewards to a single fixed address. To distribute rewards, use mining software that creates its own distribution transactions, a light wallet or the zcashd wallet.
+
+Please [join the zeal on Discord](https://discord.gg/na6QZNd) if you'd like to find out more or get involved\!
+
+## ZeWIF
+
+ZeWIF is a joint project between Blockchain Commons and [Zingo Labs](https://zingolabs.org/), 
+sponsored by a [Zcash Community Grant](https://zcashcommunitygrants.org/). 
+It was created in part to support the deprecation of the 
+[zcashd reference wallet](https://z.cash/ecosystem/zcashd/)but moreso to create 
+a format that supports [Openness and Indepence](https://developer.blockchaincommons.com/principles/) 
+by allowing users to easily migrate among Zcash wallets without concern of loss 
+of funds.
+
+GitHub: https://github.com/BlockchainCommons/zewif
+Info: https://developer.blockchaincommons.com/chains/zcash/zewif/
+
+
