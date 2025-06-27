@@ -1,4 +1,5 @@
 export default {
     index: '',
-    'zcash-z3': ''
+    'zcash-z3': '',
+    'community': '',
 }
