@@ -1,0 +1,48 @@
+# Zcashd version lifecycle: the Zcash ecosystem metronome. 
+
+Every 16 weeks a Zcashd version *dies* and a new one *is born*. This happens 
+whether Zcashd code is being substantially changed or not. Once a version is 
+released, *it can’t be stopped*. Nobody can tell you which version of Zcashd to 
+run. Zcashd is designed to stop running at a given blockheight and operators have
+to update their version to keep validating (or mining) blocks. This means that 
+if you need to release a new version of Zcashd, for the case it requires the 
+current supported version to stop working, you need to wait until the 
+End-of-Support (EOS) of the current version. 
+
+This means that the feature that you finish developing today in Zcashd, will 
+only see the light of day on mainnet after the EOS date of the current version, 
+when the version that includes that feature becomes the current version (provided 
+that it doesn’t need a transition cycle). Sometimes that could mean a day, others 
+it can mean 16 weeks. That’s how this metronome keeps a decentralized, 
+permissionless and censorship-resistant protocol keeps everyone coordinated in 
+terms of software releases. 
+
+The timeline below shows the current Zcash version and the milestones where the 
+support of the next three versions end. 
+
+![Zcash release cycle](/assets/zcashd_release_cycle.png)
+
+The next Zcashd EOS is January 21st 2026\. This entails that whenever the Zcash 
+development teams have consensus that Zcashd deprecation development is complete, 
+then the ecosystem will need a whole EOS cycle to occur in order to deploy the 
+proper versions that will stop the current supported Zcashd version and allow 
+the Zcash maintainers to create and deploy the **End-of-Life** version of Zcashd. 
+
+The Z3 development cross-team group gathered and estimated that it is acceptable 
+to assess that Zcashd deprecation development completion window could span between 
+now and May 2026 (Zcashd 6.10.1 EOS). This leaves the 16 weeks between 6.10.1 and 
+6.10.2 to be the cycle buffer where the Z3 infrastructure could co-exist in 
+production with Zcashd for the case NU7 is set to activate in September 2026
+
+This means that NU7 could be targeted for activation after September 2026 indicated 
+by Zcashd 6.10.2 EOS Milestone provided that it is feature complete and the NU 
+process can be carried out by then, with the good practices that the Zcash core 
+developers have been doing all of these years.
+
+## Towards a friction-less Network Upgrade process
+
+Zcash core developers are researching ways to reduce the impact of Network 
+Upgrades that include transaction changes. This means less hassle for wallet and 
+infrastructure providers and a higher pace for smaller updates even if they do 
+include transaction format changes. Core developers are committed to improve UX 
+for all ecosystem actors including the most tech savvy ones. 
