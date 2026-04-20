@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "^16.1.5",
+    "next": "^16.2.3",
     "nextra": "^4.4.0",
     "nextra-theme-docs": "^4.4.0",
     "react": "^19.1.0",
@@ -28,7 +28,16 @@
       "mermaid@*": "11.10.0",
       "@theguild/remark-mermaid>mermaid": "11.10.0",
       "nextra>mermaid": "11.10.0",
-      "nextra-theme-docs>mermaid": "11.10.0"
+      "nextra-theme-docs>mermaid": "11.10.0",
+      "dompurify": "3.4.0",
+      "picomatch": "2.3.2",
+      "lodash-es": "4.18.0",
+      "@xmldom/xmldom": "0.9.9",
+      "yaml": "2.8.3",
+      "tar": "7.5.11",
+      "minimatch": "10.2.3",
+      "@isaacs/brace-expansion": "5.0.1",
+      "mdast-util-to-hast": "13.2.1"
     }
   }
 }
