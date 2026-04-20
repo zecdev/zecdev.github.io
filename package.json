@@ -36,7 +36,8 @@
       "yaml": "2.8.3",
       "tar": "7.5.11",
       "minimatch": "10.2.3",
-      "@isaacs/brace-expansion": "5.0.1"
+      "@isaacs/brace-expansion": "5.0.1",
+      "mdast-util-to-hast": "13.2.1"
     }
   }
 }
