@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Workshop — Zcash AV Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F4B728;
+    --gold-dim: #7A5C14;
+    --gold-light: #FEF3D0;
+    --ink: #0F0E0B;
+    --ink-2: #1E1D19;
+    --ink-3: #2D2C26;
+    --ink-4: #3E3D35;
+    --fog: #8A897E;
+    --fog-2: #B5B4A8;
+    --cream: #FAF8F2;
+    --cream-2: #F0EDE3;
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --red: #C0392B;
+    --red-light: #FDECEA;
+    --blue: #1A6DB5;
+    --blue-light: #E6F1FB;
+    --border: rgba(15,14,11,0.1);
+    --border-strong: rgba(15,14,11,0.2);
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* === LAYOUT === */
+  .shell {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+
+  /* === HEADER === */
+  header {
+    grid-column: 1 / -1;
+    background: var(--ink);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+  }
+
+  header .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    margin-top: 1px;
+  }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .timer-display {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  .timer-btn {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .timer-btn:hover { opacity: 0.8; }
+
+  /* === SIDEBAR === */
+  nav {
+    background: var(--ink-2);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 62px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--fog);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0 1.25rem 0.5rem;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0.6rem 1.25rem;
+    cursor: pointer;
+    transition: background 0.1s;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); }
+  .nav-item.active {
+    background: rgba(244,183,40,0.1);
+    border-left-color: var(--gold);
+  }
+
+  .nav-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--ink-4);
+    border: 1.5px solid var(--ink-4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--fog);
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.2s;
+  }
+  .nav-item.active .nav-dot {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--ink);
+  }
+  .nav-item.done .nav-dot {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+    font-size: 12px;
+  }
+
+  .nav-text { flex: 1; }
+  .nav-title {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cream-2);
+    line-height: 1.3;
+  }
+  .nav-item.active .nav-title { color: var(--gold); }
+  .nav-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--fog);
+    margin-top: 2px;
+  }
+
+  .nav-divider {
+    height: 1px;
+    background: var(--ink-4);
+    margin: 0.75rem 1.25rem;
+  }
+
+  .nav-progress {
+    margin-top: auto;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--ink-4);
+  }
+  .progress-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--fog);
+    margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--ink-4);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* === MAIN === */
+  main {
+    padding: 0;
+    overflow-y: auto;
+  }
+
+  .section {
+    display: none;
+    padding: 2.5rem 3rem;
+    max-width: 820px;
+  }
+  .section.active { display: block; }
+
+  /* === TYPOGRAPHY === */
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gold-light);
+    color: var(--gold-dim);
+    border: 1px solid rgba(244,183,40,0.3);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--fog);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  p { margin-bottom: 1rem; color: var(--ink-3); }
+
+  strong { font-weight: 600; color: var(--ink); }
+
+  /* === CARDS === */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .concept-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .concept-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .concept-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .concept-desc {
+    font-size: 14px;
+    color: var(--fog);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* === CALLOUTS === */
+  .callout {
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { flex: 1; }
+  .callout-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .callout-text { font-size: 14px; line-height: 1.55; margin: 0; }
+
+  .callout.tip { background: var(--teal-light); border-left: 3px solid var(--teal); }
+  .callout.tip .callout-title { color: var(--teal); }
+  .callout.tip .callout-text { color: #0F6E56; }
+
+  .callout.warning { background: #FFF8E1; border-left: 3px solid #F59F00; }
+  .callout.warning .callout-title { color: #855000; }
+  .callout.warning .callout-text { color: #633806; }
+
+  .callout.analogy { background: var(--blue-light); border-left: 3px solid var(--blue); }
+  .callout.analogy .callout-title { color: var(--blue); }
+  .callout.analogy .callout-text { color: #0C447C; }
+
+  .callout.gold { background: var(--gold-light); border-left: 3px solid var(--gold); }
+  .callout.gold .callout-title { color: var(--gold-dim); }
+  .callout.gold .callout-text { color: var(--gold-dim); }
+
+  /* === EXERCISES === */
+  .exercise-box {
+    background: var(--ink);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .exercise-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .exercise-num {
+    width: 28px; height: 28px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .exercise-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .exercise-badge {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--fog);
+    background: var(--ink-3);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .step-check {
+    width: 20px; height: 20px;
+    border: 1.5px solid var(--ink-4);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    background: var(--ink-3);
+  }
+  .step.done .step-check {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+  .step.done .step-check::after {
+    content: '';
+    width: 10px; height: 6px;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  .step-text {
+    font-size: 14px;
+    color: var(--fog-2);
+    line-height: 1.55;
+    flex: 1;
+  }
+  .step.done .step-text {
+    color: var(--fog);
+    text-decoration: line-through;
+    text-decoration-color: var(--ink-4);
+  }
+
+  /* === CODE / TERMINAL === */
+  .terminal {
+    background: #0D1117;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 0.75rem 0;
+    border: 1px solid #30363D;
+  }
+  .terminal-bar {
+    background: #161B22;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #30363D;
+  }
+  .t-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .t-dot.r { background: #FF5F57; }
+  .t-dot.y { background: #FFBD2E; }
+  .t-dot.g { background: #28C840; }
+  .terminal-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #8B949E;
+    margin-left: 6px;
+  }
+  .terminal-body {
+    padding: 1rem 1.25rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .t-prompt { color: #3FB950; }
+  .t-cmd { color: #E6EDF3; }
+  .t-output { color: #8B949E; }
+  .t-comment { color: #6E7681; font-style: italic; }
+  .t-path { color: #79C0FF; }
+
+  code {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85em;
+    background: var(--cream-2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+
+  /* code and strong inside dark exercise boxes need light colors */
+  .exercise-box .step-text code {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.2);
+    color: #E8D99A;
+  }
+  .exercise-box .step-text strong {
+    color: var(--cream);
+  }
+
+  /* === GITHUB MOCKUP === */
+  .gh-mockup {
+    background: #0D1117;
+    border: 1px solid #30363D;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: 1rem 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .gh-topbar {
+    background: #161B22;
+    padding: 10px 16px;
+    border-bottom: 1px solid #30363D;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .gh-logo { color: #E6EDF3; font-size: 18px; }
+  .gh-breadcrumb {
+    font-size: 14px;
+    color: #E6EDF3;
+  }
+  .gh-breadcrumb a { color: #79C0FF; text-decoration: none; }
+  .gh-body { padding: 16px; }
+  .gh-file-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid #21262D;
+    font-size: 14px;
+    color: #E6EDF3;
+  }
+  .gh-file-row:last-child { border-bottom: none; }
+  .gh-icon { font-size: 14px; color: #848D97; width: 20px; text-align: center; }
+  .gh-fname { color: #79C0FF; flex: 1; }
+  .gh-commit-msg { color: #848D97; font-size: 12px; flex: 2; }
+  .gh-time { color: #848D97; font-size: 12px; }
+
+  .gh-readme {
+    border: 1px solid #30363D;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .gh-readme-header {
+    background: #161B22;
+    padding: 8px 16px;
+    border-bottom: 1px solid #30363D;
+    font-size: 12px;
+    color: #848D97;
+  }
+  .gh-readme-body {
+    padding: 16px;
+    color: #E6EDF3;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .gh-readme-body h1 { color: #E6EDF3; font-size: 18px; margin-bottom: 8px; }
+  .gh-readme-body p { color: #8B949E; margin: 0; }
+
+  /* === COMMIT HISTORY === */
+  .commit-chain { position: relative; padding-left: 24px; }
+  .commit-chain::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border-strong);
+  }
+  .commit-entry {
+    position: relative;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .commit-entry::before {
+    content: '';
+    position: absolute;
+    left: -14px; top: 50%;
+    transform: translateY(-50%);
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid white;
+  }
+  .commit-hash {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-right: 8px;
+  }
+  .commit-msg { font-size: 14px; color: var(--ink); }
+  .commit-meta { font-size: 12px; color: var(--fog); margin-top: 2px; }
+
+  /* === BRANCH DIAGRAM === */
+  .branch-visual {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  /* === TIMELINE === */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1.5rem 0;
+  }
+  .tl-item {
+    display: grid;
+    grid-template-columns: 80px auto 1fr;
+    gap: 0 16px;
+    min-height: 60px;
+  }
+  .tl-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--fog);
+    text-align: right;
+    padding-top: 4px;
+    line-height: 1.3;
+  }
+  .tl-line-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .tl-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    margin-top: 3px;
+    border: 2px solid var(--cream);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+  .tl-connector {
+    flex: 1;
+    width: 2px;
+    background: var(--border-strong);
+    margin: 3px 0;
+  }
+  .tl-item:last-child .tl-connector { display: none; }
+  .tl-content {
+    padding-bottom: 1.25rem;
+    padding-top: 0;
+  }
+  .tl-module {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-dim);
+    margin-bottom: 2px;
+  }
+  .tl-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .tl-desc { font-size: 13px; color: var(--fog); margin: 0; line-height: 1.4; }
+
+  /* === PILL TAGS === */
+  .tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-right: 4px;
+  }
+  .tag.hands-on { background: var(--gold-light); color: var(--gold-dim); }
+  .tag.concept { background: var(--blue-light); color: var(--blue); }
+  .tag.demo { background: var(--teal-light); color: var(--teal); }
+
+  /* === NAV BUTTONS === */
+  .nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: var(--gold);
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--fog);
+    border-color: var(--border-strong);
+  }
+  .btn-secondary:hover { color: var(--ink); border-color: var(--ink); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--blue);
+    border-color: var(--blue-light);
+  }
+  .btn-ghost:hover { background: var(--blue-light); }
+
+  /* === VOCAB TABLE === */
+  .vocab-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 14px; }
+  .vocab-table th {
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--fog);
+    letter-spacing: 0.08em;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-strong);
+    background: var(--cream-2);
+  }
+  .vocab-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .vocab-term {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--cream-2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .vocab-def { color: var(--ink-3); line-height: 1.5; }
+  .vocab-analogy { color: var(--fog); font-style: italic; font-size: 13px; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 820px) {
+    .shell { grid-template-columns: 1fr; }
+    nav { display: none; }
+    .section { padding: 1.5rem; }
+    .card-row { grid-template-columns: 1fr; }
+  }
+
+  /* === SCROLL HIDDEN === */
+  nav::-webkit-scrollbar { width: 4px; }
+  nav::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 2px; }
+
+  /* === EXERCISE COMPLETION === */
+  .exercise-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ink-3);
+  }
+  .ex-prog-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--ink-3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .ex-prog-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+  .ex-prog-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--fog);
+    white-space: nowrap;
+  }
+
+  .complete-badge {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: var(--teal-light);
+    color: var(--teal);
+    border: 1px solid rgba(29,158,117,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 0.75rem;
+  }
+  .complete-badge.visible { display: flex; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- HEADER -->
+  <header>
+    <div class="logo-mark">ZAV</div>
+    <div>
+      <h1>Git Workshop — Zcash AV Club</h1>
+      <div class="subtitle">60-minute hands-on session // version control for everyone</div>
+    </div>
+    <div class="header-right">
+      <div class="timer-display" id="timerDisplay">60:00</div>
+      <button class="timer-btn" id="timerBtn" onclick="toggleTimer()">START</button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="nav-section-label" style="margin-top:0.5rem;">Modules</div>
+
+    <a class="nav-item active" data-section="overview" onclick="showSection('overview',this)">
+      <div class="nav-dot">★</div>
+      <div class="nav-text">
+        <div class="nav-title">Overview</div>
+        <div class="nav-meta">Agenda & goals</div>
+      </div>
+    </a>
+
+    <a class="nav-item" data-section="m1" onclick="showSection('m1',this)">
+      <div class="nav-dot">1</div>
+      <div class="nav-text">
+        <div class="nav-title">What is Git?</div>
+        <div class="nav-meta">10 min · concepts</div>
+      </div>
+    </a>
+
+    <a class="nav-item" data-section="m2" onclick="showSection('m2',this)">
+      <div class="nav-dot">2</div>
+      <div class="nav-text">
+        <div class="nav-title">Explore GitHub</div>
+        <div class="nav-meta">10 min · guided tour</div>
+      </div>
+    </a>
+
+    <a class="nav-item" data-section="m3" onclick="showSection('m3',this)">
+      <div class="nav-dot">3</div>
+      <div class="nav-text">
+        <div class="nav-title">Create the AV Repo</div>
+        <div class="nav-meta">15 min · hands-on</div>
+      </div>
+    </a>
+
+    <a class="nav-item" data-section="m4" onclick="showSection('m4',this)">
+      <div class="nav-dot">4</div>
+      <div class="nav-text">
+        <div class="nav-title">Make Your First Commit</div>
+        <div class="nav-meta">15 min · hands-on</div>
+      </div>
+    </a>
+
+    <a class="nav-item" data-section="m5" onclick="showSection('m5',this)">
+      <div class="nav-dot">5</div>
+      <div class="nav-text">
+        <div class="nav-title">Collaborate with PRs</div>
+        <div class="nav-meta">10 min · hands-on</div>
+      </div>
+    </a>
+
+    <div class="nav-divider"></div>
+
+    <a class="nav-item" data-section="cheatsheet" onclick="showSection('cheatsheet',this)">
+      <div class="nav-dot" style="font-size:12px;">⚡</div>
+      <div class="nav-text">
+        <div class="nav-title">Quick Reference</div>
+        <div class="nav-meta">Cheat sheet</div>
+      </div>
+    </a>
+
+    <div class="nav-progress">
+      <div class="progress-label">Workshop progress</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- ===== OVERVIEW ===== -->
+    <section id="section-overview" class="section active">
+      <div class="section-badge">📋 Workshop Overview</div>
+      <h2>Git for the Zcash AV Club</h2>
+      <p class="section-intro">In 60 minutes, you'll go from zero to managing video scripts and meeting minutes on GitHub — collaborating the same way the Zcash Light Client Working Group does.</p>
+
+      <div class="callout gold">
+        <span class="callout-icon">🎯</span>
+        <div class="callout-body">
+          <div class="callout-title">What you'll leave with</div>
+          <div class="callout-text">A real GitHub repository for the AV Club with folder structure, a README, and your first commit. You'll know how to add meeting minutes, draft a video script, and propose changes through a Pull Request — no programming required.</div>
+        </div>
+      </div>
+
+      <h3>60-Minute Agenda</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-time">0:00<br>→ 0:10</div>
+          <div class="tl-line-col"><div class="tl-dot"></div><div class="tl-connector"></div></div>
+          <div class="tl-content">
+            <div class="tl-module">Module 1 · <span class="tag concept">Concept</span></div>
+            <div class="tl-title">What is Git?</div>
+            <div class="tl-desc">The mental model: repositories, commits, branches. Why "no more final_v2_REAL.docx".</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:10<br>→ 0:20</div>
+          <div class="tl-line-col"><div class="tl-dot"></div><div class="tl-connector"></div></div>
+          <div class="tl-content">
+            <div class="tl-module">Module 2 · <span class="tag demo">Demo</span></div>
+            <div class="tl-title">Explore GitHub with the LCWG repo</div>
+            <div class="tl-desc">Live tour of github.com/zcash/lcwg as a real-world model. Files, history, issues.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:20<br>→ 0:35</div>
+          <div class="tl-line-col"><div class="tl-dot"></div><div class="tl-connector"></div></div>
+          <div class="tl-content">
+            <div class="tl-module">Module 3 · <span class="tag hands-on">Hands-on</span></div>
+            <div class="tl-title">Create the AV Club repository</div>
+            <div class="tl-desc">Create your GitHub account, make the repo, set up folder structure for scripts and minutes.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:35<br>→ 0:50</div>
+          <div class="tl-line-col"><div class="tl-dot"></div><div class="tl-connector"></div></div>
+          <div class="tl-content">
+            <div class="tl-module">Module 4 · <span class="tag hands-on">Hands-on</span></div>
+            <div class="tl-title">Make your first commit</div>
+            <div class="tl-desc">Edit a file in the browser, write a meaningful commit message, see the change in history.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:50<br>→ 1:00</div>
+          <div class="tl-line-col"><div class="tl-dot"></div><div class="tl-connector"></div></div>
+          <div class="tl-content">
+            <div class="tl-module">Module 5 · <span class="tag hands-on">Hands-on</span></div>
+            <div class="tl-title">Collaborate with Pull Requests</div>
+            <div class="tl-desc">Branch, propose a change, review and merge — the full collaboration loop.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>What we'll manage in this repo</h3>
+      <div class="card-row">
+        <div class="concept-card">
+          <div class="concept-icon">📄</div>
+          <div class="concept-title">meeting-minutes/</div>
+          <p class="concept-desc">One Markdown file per meeting. Dates, decisions, action items — all versioned and searchable.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🎬</div>
+          <div class="concept-title">scripts/</div>
+          <p class="concept-desc">Video scripts in draft → review → published stages. Comments as feedback, branches for drafts.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">📁</div>
+          <div class="concept-title">resources/</div>
+          <p class="concept-desc">Style guides, templates, links. The single source of truth for club standards.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">📖</div>
+          <div class="concept-title">README.md</div>
+          <p class="concept-desc">The club's home page on GitHub. Who we are, how to contribute, current projects.</p>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-primary" onclick="nextSection()">Start Module 1 →</button>
+      </div>
+    </section>
+
+    <!-- ===== MODULE 1: WHAT IS GIT ===== -->
+    <section id="section-m1" class="section">
+      <div class="section-badge">Module 1 · 10 min</div>
+      <h2>What is Git?</h2>
+      <p class="section-intro">Git is a time machine for text files. GitHub is where you store that time machine in the cloud, so your whole team can use it.</p>
+
+      <div class="callout analogy">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">
+          <div class="callout-title">The core analogy</div>
+          <div class="callout-text">You know how Google Docs keeps a "Version History" of every edit? Git does that for entire folders of files — and it lets multiple people work on different parts at the same time, then merge their work together.</div>
+        </div>
+      </div>
+
+      <h3>Three concepts you need to know</h3>
+      <div class="card-row">
+        <div class="concept-card">
+          <div class="concept-icon">📦</div>
+          <div class="concept-title">Repository (repo)</div>
+          <p class="concept-desc">A folder where Git tracks every change, forever. Think of it as a project binder that remembers every version of every page.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">📸</div>
+          <div class="concept-title">Commit</div>
+          <p class="concept-desc">A saved snapshot with a note explaining what changed. Like pressing "Save + Add a note" in a document. Each commit has an author and a timestamp.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🌿</div>
+          <div class="concept-title">Branch</div>
+          <p class="concept-desc">A copy of the repo where you can experiment freely. The main branch is the "official" published version. Branches are for drafts and proposals.</p>
+        </div>
+        <div class="concept-card">
+          <div class="concept-icon">🔀</div>
+          <div class="concept-title">Pull Request (PR)</div>
+          <p class="concept-desc">A proposal to merge a branch into main. Others can comment, request changes, or approve. It's how the team reviews work before publishing.</p>
+        </div>
+      </div>
+
+      <h3>What this means for the AV Club</h3>
+
+      <table class="vocab-table">
+        <thead><tr><th>Without Git</th><th>With Git</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="vocab-def" style="color:var(--red);">script_final_v3_REAL_USE_THIS.docx</td>
+            <td class="vocab-def" style="color:var(--teal);">scripts/ep04-privacy-explainer.md (with full history)</td>
+          </tr>
+          <tr>
+            <td class="vocab-def" style="color:var(--red);">Email threads with conflicting edits</td>
+            <td class="vocab-def" style="color:var(--teal);">Pull Request with inline comments and approval</td>
+          </tr>
+          <tr>
+            <td class="vocab-def" style="color:var(--red);">"Who changed the intro?" — no one knows</td>
+            <td class="vocab-def" style="color:var(--teal);">Git log shows: @alice changed intro on March 15</td>
+          </tr>
+          <tr>
+            <td class="vocab-def" style="color:var(--red);">Meeting notes lost in Telegram</td>
+            <td class="vocab-def" style="color:var(--teal);">meeting-minutes/2026-03-27.md — searchable forever</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>A commit chain — what history looks like</h3>
+      <div class="card">
+        <div class="commit-chain">
+          <div class="commit-entry">
+            <span class="commit-hash">a3f9d2</span>
+            <span class="commit-msg">Add Q1 2026 meeting minutes</span>
+            <div class="commit-meta">@mariana · 2 hours ago</div>
+          </div>
+          <div class="commit-entry">
+            <span class="commit-hash">7c12b0</span>
+            <span class="commit-msg">Fix typo in episode 3 script intro</span>
+            <div class="commit-meta">@leo · yesterday</div>
+          </div>
+          <div class="commit-entry">
+            <span class="commit-hash">d5e8a1</span>
+            <span class="commit-msg">Draft script for "What is Zcash?" episode</span>
+            <div class="commit-meta">@mariana · 3 days ago</div>
+          </div>
+          <div class="commit-entry">
+            <span class="commit-hash">2b34f7</span>
+            <span class="commit-msg">Initial repo setup: README and folder structure</span>
+            <div class="commit-meta">@leo · 1 week ago</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">✅</span>
+        <div class="callout-body">
+          <div class="callout-title">Good to know</div>
+          <div class="callout-text">In today's workshop we'll use GitHub's website — no command line, no installation. All the Git operations happen in your browser. If you later want to work locally, tools like GitHub Desktop make it easy.</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+        <button class="btn btn-primary" onclick="nextSection()">Module 2: Explore GitHub →</button>
+      </div>
+    </section>
+
+    <!-- ===== MODULE 2: EXPLORE GITHUB ===== -->
+    <section id="section-m2" class="section">
+      <div class="section-badge">Module 2 · 10 min</div>
+      <h2>Explore GitHub</h2>
+      <p class="section-intro">Before building our own repo, let's look at the Light Client Working Group's repo — a real example of how the Zcash community uses Git to organize their work.</p>
+
+      <div class="callout gold">
+        <span class="callout-icon">🔗</span>
+        <div class="callout-body">
+          <div class="callout-title">Open this now</div>
+          <div class="callout-text"><a href="https://github.com/zcash/lcwg" target="_blank" style="color:var(--gold-dim);font-weight:600;">github.com/zcash/lcwg</a> — the Zcash Light Client Working Group repo. We'll tour this together.</div>
+        </div>
+      </div>
+
+      <h3>What you're looking at</h3>
+
+      <div class="gh-mockup">
+        <div class="gh-topbar">
+          <span class="gh-logo">⬡</span>
+          <span class="gh-breadcrumb"><a>zcash</a> / <a>lcwg</a></span>
+        </div>
+        <div class="gh-body">
+          <div class="gh-file-row">
+            <span class="gh-icon">📁</span>
+            <span class="gh-fname">meeting-notes</span>
+            <span class="gh-commit-msg">Add 2026 Q1 meeting notes</span>
+            <span class="gh-time">2 days ago</span>
+          </div>
+          <div class="gh-file-row">
+            <span class="gh-icon">📁</span>
+            <span class="gh-fname">proposals</span>
+            <span class="gh-commit-msg">Add ZIP-315 discussion notes</span>
+            <span class="gh-time">last week</span>
+          </div>
+          <div class="gh-file-row">
+            <span class="gh-icon">📄</span>
+            <span class="gh-fname">README.md</span>
+            <span class="gh-commit-msg">Update meeting schedule for 2026</span>
+            <span class="gh-time">3 days ago</span>
+          </div>
+          <div class="gh-readme">
+            <div class="gh-readme-header">📖 README.md</div>
+            <div class="gh-readme-body">
+              <h1>Light Client Working Group</h1>
+              <p>This repository contains meeting notes, proposals, and resources for the Zcash Light Client Working Group. Meetings are held bi-weekly.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Exercise: guided tour</h3>
+
+      <div class="exercise-box">
+        <div class="exercise-header">
+          <div class="exercise-num">A</div>
+          <div class="exercise-title">Navigate the LCWG repo</div>
+          <div class="exercise-badge">~8 min</div>
+        </div>
+        <ul class="step-list" id="ex-m2">
+          <li class="step" onclick="toggleStep(this,'ex-m2')">
+            <div class="step-check"></div>
+            <div class="step-text">Open <strong>github.com/zcash/lcwg</strong> in your browser. Notice the file list and the README preview below it.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m2')">
+            <div class="step-check"></div>
+            <div class="step-text">Click into the <strong>meeting-notes</strong> folder. Open a recent meeting note file and read through it. This is a plain Markdown (.md) text file.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m2')">
+            <div class="step-check"></div>
+            <div class="step-text">Click the <strong>History</strong> button (top right of the file view). This shows every commit that changed this file. Click one commit to see the exact diff — what was added (green) and removed (red).</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m2')">
+            <div class="step-check"></div>
+            <div class="step-text">Go back to the main repo page. Click <strong>commits</strong> near the top (shows "X commits"). Scroll through the history and read the commit messages — notice how each one is a clear description of a change.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m2')">
+            <div class="step-check"></div>
+            <div class="step-text">Click the <strong>Issues</strong> tab. Issues are used for tracking tasks and discussions. Check the <strong>Pull requests</strong> tab too — these are proposed changes waiting for review.</div>
+          </li>
+        </ul>
+        <div class="exercise-progress">
+          <div class="ex-prog-bar"><div class="ex-prog-fill" id="ex-m2-prog" style="width:0%"></div></div>
+          <div class="ex-prog-label" id="ex-m2-label">0 / 5</div>
+        </div>
+      </div>
+
+      <div class="callout analogy">
+        <span class="callout-icon">🤔</span>
+        <div class="callout-body">
+          <div class="callout-title">Notice the pattern</div>
+          <div class="callout-text">The LCWG repo is just text files in folders. No special software. Everything is readable in the browser. The AV Club's repo will follow exactly the same pattern — but for video scripts and meeting minutes instead of technical proposals.</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+        <button class="btn btn-primary" onclick="nextSection()">Module 3: Create the Repo →</button>
+      </div>
+    </section>
+
+    <!-- ===== MODULE 3: CREATE REPO ===== -->
+    <section id="section-m3" class="section">
+      <div class="section-badge">Module 3 · 15 min</div>
+      <h2>Create the AV Club Repository</h2>
+      <p class="section-intro">Time to build. You'll create a GitHub account (if you don't have one), start the repo, and set up the folder structure the AV Club will use going forward.</p>
+
+      <div class="callout tip">
+        <span class="callout-icon">👤</span>
+        <div class="callout-body">
+          <div class="callout-title">Step 0 — GitHub account</div>
+          <div class="callout-text">If you don't have a GitHub account yet, go to <strong>github.com</strong> and sign up. It's free. Use a username you're comfortable sharing publicly (e.g. your first name + a number).</div>
+        </div>
+      </div>
+
+      <div class="exercise-box">
+        <div class="exercise-header">
+          <div class="exercise-num">B</div>
+          <div class="exercise-title">Create the zcash-av-club repository</div>
+          <div class="exercise-badge">~7 min</div>
+        </div>
+        <ul class="step-list" id="ex-m3a">
+          <li class="step" onclick="toggleStep(this,'ex-m3a')">
+            <div class="step-check"></div>
+            <div class="step-text">Log into GitHub. Click the <strong>+</strong> icon in the top-right corner, then <strong>"New repository"</strong>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m3a')">
+            <div class="step-check"></div>
+            <div class="step-text">Set the repository name to <code>zcash-av-club</code>. Add a description: <em>"Video scripts, meeting minutes and resources for the Zcash AV Club."</em></div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m3a')">
+            <div class="step-check"></div>
+            <div class="step-text">Set visibility to <strong>Public</strong> (so anyone can read our content, just like the LCWG repo). Check <strong>"Add a README file"</strong>. Click <strong>"Create repository"</strong>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m3a')">
+            <div class="step-check"></div>
+            <div class="step-text">You now have a live GitHub repo! Copy the URL (it looks like <code>github.com/YOUR-USERNAME/zcash-av-club</code>) and share it in the group chat.</div>
+          </li>
+        </ul>
+        <div class="exercise-progress">
+          <div class="ex-prog-bar"><div class="ex-prog-fill" id="ex-m3a-prog" style="width:0%"></div></div>
+          <div class="ex-prog-label" id="ex-m3a-label">0 / 4</div>
+        </div>
+      </div>
+
+      <div class="exercise-box">
+        <div class="exercise-header">
+          <div class="exercise-num">C</div>
+          <div class="exercise-title">Add the folder structure with placeholder files</div>
+          <div class="exercise-badge">~8 min</div>
+        </div>
+
+        <div style="background:var(--ink-3);border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1rem;">
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--fog);margin-bottom:6px;">Target folder structure</div>
+          <div class="terminal-body" style="padding:0;">
+            <div class="t-output">zcash-av-club/</div>
+            <div class="t-output">├── README.md</div>
+            <div class="t-output">├── meeting-minutes/</div>
+            <div class="t-output">│   └── 2026-03-27.md</div>
+            <div class="t-output">├── scripts/</div>
+            <div class="t-output">│   └── template.md</div>
+            <div class="t-output">└── resources/</div>
+            <div class="t-output">    └── style-guide.md</div>
+          </div>
+        </div>
+
+        <ul class="step-list" id="ex-m3b">
+          <li class="step" onclick="toggleStep(this,'ex-m3b')">
+            <div class="step-check"></div>
+            <div class="step-text">In your repo, click <strong>"Add file" → "Create new file"</strong>. In the filename box, type <code>meeting-minutes/2026-03-27.md</code> — GitHub creates the folder automatically when you include a <code>/</code>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m3b')">
+            <div class="step-check"></div>
+            <div class="step-text">Paste this content into the file editor:
+              <div class="terminal" style="margin-top:8px;">
+                <div class="terminal-bar"><span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span><span class="terminal-label">2026-03-27.md</span></div>
+                <div class="terminal-body">
+                  <div class="t-cmd"># AV Club Meeting — March 27, 2026</div>
+                  <div class="t-cmd"></div>
+                  <div class="t-cmd">**Attendees:** (list names)</div>
+                  <div class="t-cmd">**Facilitator:** (name)</div>
+                  <div class="t-cmd"></div>
+                  <div class="t-cmd">## Agenda</div>
+                  <div class="t-cmd">1. Git workshop debrief</div>
+                  <div class="t-cmd">2. Next video topic vote</div>
+                  <div class="t-cmd"></div>
+                  <div class="t-cmd">## Notes</div>
+                  <div class="t-cmd">*(add notes here)*</div>
+                  <div class="t-cmd"></div>
+                  <div class="t-cmd">## Action Items</div>
+                  <div class="t-cmd">- [ ] (assignee): task description</div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m3b')">
+            <div class="step-check"></div>
+            <div class="step-text">Scroll down to the <strong>"Commit changes"</strong> section. In the commit message box write: <code>Add meeting minutes for 2026-03-27</code>. Keep "Commit directly to main" selected. Click <strong>"Commit changes"</strong>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m3b')">
+            <div class="step-check"></div>
+            <div class="step-text">Repeat the same process to create <code>scripts/template.md</code>. Use this content: <code># Script Title\n\n**Episode:** \n**Length:** \n\n## Hook (0:00–0:30)\n\n## Main Content\n\n## Call to Action</code></div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m3b')">
+            <div class="step-check"></div>
+            <div class="step-text">Back on your repo homepage, confirm you can see the <strong>meeting-minutes</strong> and <strong>scripts</strong> folders. Click "commits" — you should see 3 commits total (initial + 2 files you added).</div>
+          </li>
+        </ul>
+        <div class="exercise-progress">
+          <div class="ex-prog-bar"><div class="ex-prog-fill" id="ex-m3b-prog" style="width:0%"></div></div>
+          <div class="ex-prog-label" id="ex-m3b-label">0 / 5</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+        <button class="btn btn-primary" onclick="nextSection()">Module 4: First Commit →</button>
+      </div>
+    </section>
+
+    <!-- ===== MODULE 4: COMMITS ===== -->
+    <section id="section-m4" class="section">
+      <div class="section-badge">Module 4 · 15 min</div>
+      <h2>Make Your First Real Commit</h2>
+      <p class="section-intro">Now let's practice the core daily workflow: edit a file, write a good commit message, and see the change in history.</p>
+
+      <h3>What makes a good commit message?</h3>
+
+      <div class="card-row">
+        <div class="card" style="border-left:3px solid var(--red);">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--red);font-weight:700;margin-bottom:8px;">❌ BAD</div>
+          <code style="font-size:13px;display:block;margin-bottom:6px;">updated stuff</code>
+          <code style="font-size:13px;display:block;margin-bottom:6px;">fix</code>
+          <code style="font-size:13px;display:block;">asdfasdf</code>
+          <p style="font-size:13px;color:var(--fog);margin:8px 0 0;">Nobody knows what changed or why. Useless in history.</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--teal);">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--teal);font-weight:700;margin-bottom:8px;">✅ GOOD</div>
+          <code style="font-size:13px;display:block;margin-bottom:6px;">Add March 27 meeting minutes</code>
+          <code style="font-size:13px;display:block;margin-bottom:6px;">Fix typo in episode 4 script intro</code>
+          <code style="font-size:13px;display:block;">Draft "What is shielded tx?" script</code>
+          <p style="font-size:13px;color:var(--fog);margin:8px 0 0;">Clear action verb + what changed. Future-you will thank you.</p>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">📝</span>
+        <div class="callout-body">
+          <div class="callout-title">The commit message formula</div>
+          <div class="callout-text"><strong>Verb + what + (optional) why.</strong> Examples: "Add notes from Q1 planning session", "Update script intro per team feedback", "Remove outdated resource links". Start with a capital letter, keep it under 72 characters, no period at the end.</div>
+        </div>
+      </div>
+
+      <div class="exercise-box">
+        <div class="exercise-header">
+          <div class="exercise-num">D</div>
+          <div class="exercise-title">Edit the README and commit the change</div>
+          <div class="exercise-badge">~7 min</div>
+        </div>
+        <ul class="step-list" id="ex-m4a">
+          <li class="step" onclick="toggleStep(this,'ex-m4a')">
+            <div class="step-check"></div>
+            <div class="step-text">On your repo homepage, click <strong>README.md</strong>, then the <strong>pencil icon ✏️</strong> to edit it.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m4a')">
+            <div class="step-check"></div>
+            <div class="step-text">Replace the auto-generated content with a real description. Include: what the AV Club is, what this repo contains, and a link to the LCWG repo as inspiration (<code>github.com/zcash/lcwg</code>).</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m4a')">
+            <div class="step-check"></div>
+            <div class="step-text">Use the <strong>"Preview"</strong> tab to see how the Markdown renders (# becomes a heading, **bold** becomes bold, etc.).</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m4a')">
+            <div class="step-check"></div>
+            <div class="step-text">Commit with message: <code>Write proper README with club description</code>. Commit to main.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m4a')">
+            <div class="step-check"></div>
+            <div class="step-text">Go back to the repo home. Your README is live! Click the <strong>commit count</strong> link and find this commit in history. Click it to see the exact diff.</div>
+          </li>
+        </ul>
+        <div class="exercise-progress">
+          <div class="ex-prog-bar"><div class="ex-prog-fill" id="ex-m4a-prog" style="width:0%"></div></div>
+          <div class="ex-prog-label" id="ex-m4a-label">0 / 5</div>
+        </div>
+      </div>
+
+      <h3>Quick Markdown reference</h3>
+
+      <div class="card">
+        <table class="vocab-table" style="margin:0;">
+          <thead><tr><th>You type</th><th>It renders as</th></tr></thead>
+          <tbody>
+            <tr><td><code># Title</code></td><td class="vocab-def">Large heading (H1)</td></tr>
+            <tr><td><code>## Section</code></td><td class="vocab-def">Medium heading (H2)</td></tr>
+            <tr><td><code>**bold text**</code></td><td class="vocab-def"><strong>bold text</strong></td></tr>
+            <tr><td><code>*italic text*</code></td><td class="vocab-def"><em>italic text</em></td></tr>
+            <tr><td><code>- item one</code></td><td class="vocab-def">• item one (bullet list)</td></tr>
+            <tr><td><code>- [x] done task</code></td><td class="vocab-def">☑ done task (checkbox)</td></tr>
+            <tr><td><code>[link text](url)</code></td><td class="vocab-def" style="color:var(--blue);">link text</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-box">
+        <div class="exercise-header">
+          <div class="exercise-num">E</div>
+          <div class="exercise-title">Add your name to the meeting minutes</div>
+          <div class="exercise-badge">~5 min</div>
+        </div>
+        <ul class="step-list" id="ex-m4b">
+          <li class="step" onclick="toggleStep(this,'ex-m4b')">
+            <div class="step-check"></div>
+            <div class="step-text">Navigate to <code>meeting-minutes/2026-03-27.md</code> and click the edit pencil.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m4b')">
+            <div class="step-check"></div>
+            <div class="step-text">Add the attendees' names, today's facilitator, and fill in at least one agenda note.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m4b')">
+            <div class="step-check"></div>
+            <div class="step-text">Commit with a clear message like <code>Add attendees and initial notes for 2026-03-27</code>.</div>
+          </li>
+        </ul>
+        <div class="exercise-progress">
+          <div class="ex-prog-bar"><div class="ex-prog-fill" id="ex-m4b-prog" style="width:0%"></div></div>
+          <div class="ex-prog-label" id="ex-m4b-label">0 / 3</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+        <button class="btn btn-primary" onclick="nextSection()">Module 5: Pull Requests →</button>
+      </div>
+    </section>
+
+    <!-- ===== MODULE 5: PULL REQUESTS ===== -->
+    <section id="section-m5" class="section">
+      <div class="section-badge">Module 5 · 10 min</div>
+      <h2>Collaborate with Pull Requests</h2>
+      <p class="section-intro">The full collaboration loop: propose a change on a branch, ask for review, discuss, and merge. This is how the AV Club reviews scripts before publishing.</p>
+
+      <h3>The branch → PR → merge workflow</h3>
+
+      <div class="branch-visual">
+        <svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+          <!-- main branch line -->
+          <line x1="40" y1="40" x2="560" y2="40" stroke="#D3D1C7" stroke-width="2.5"/>
+          <!-- draft branch line -->
+          <line x1="160" y1="40" x2="220" y2="85" stroke="#1D9E75" stroke-width="2" stroke-dasharray="5,3"/>
+          <line x1="220" y1="85" x2="420" y2="85" stroke="#1D9E75" stroke-width="2"/>
+          <line x1="420" y1="85" x2="460" y2="40" stroke="#1D9E75" stroke-width="2" stroke-dasharray="5,3"/>
+          <!-- dots on main -->
+          <circle cx="40" cy="40" r="7" fill="#F4B728"/>
+          <circle cx="160" cy="40" r="7" fill="#888780"/>
+          <circle cx="460" cy="40" r="9" fill="#1D9E75"/>
+          <circle cx="560" cy="40" r="7" fill="#888780"/>
+          <!-- dot on branch -->
+          <circle cx="280" cy="85" r="7" fill="#1D9E75"/>
+          <circle cx="360" cy="85" r="7" fill="#1D9E75"/>
+          <!-- labels -->
+          <text x="40" y="20" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" fill="#5F5E5A">initial</text>
+          <text x="160" y="20" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" fill="#5F5E5A">branch</text>
+          <text x="460" y="20" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" fill="#1D9E75" font-weight="700">merge!</text>
+          <text x="280" y="105" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" fill="#1D9E75">draft commit</text>
+          <text x="360" y="105" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" fill="#1D9E75">revisions</text>
+          <!-- branch name tag -->
+          <rect x="175" y="72" width="90" height="18" rx="4" fill="#E1F5EE"/>
+          <text x="220" y="84" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#0F6E56">draft/ep05-script</text>
+          <!-- main label -->
+          <rect x="530" y="28" width="46" height="18" rx="4" fill="#F1EFE8"/>
+          <text x="553" y="40" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#5F5E5A">main</text>
+        </svg>
+        <p style="font-size:12px;color:var(--fog);margin:0.5rem 0 0;font-family:'Space Mono',monospace;">Main branch = published. Draft branch = work in progress. PR = request to merge draft → main.</p>
+      </div>
+
+      <div class="callout analogy">
+        <span class="callout-icon">🎬</span>
+        <div class="callout-body">
+          <div class="callout-title">For the AV Club specifically</div>
+          <div class="callout-text">Main branch = final approved scripts. A PR is like sending a draft script for review — team members comment on specific lines, you revise, and once everyone approves, the script gets merged to main (ready to record).</div>
+        </div>
+      </div>
+
+      <div class="exercise-box">
+        <div class="exercise-header">
+          <div class="exercise-num">F</div>
+          <div class="exercise-title">Create a draft script on a new branch</div>
+          <div class="exercise-badge">~10 min</div>
+        </div>
+        <ul class="step-list" id="ex-m5">
+          <li class="step" onclick="toggleStep(this,'ex-m5')">
+            <div class="step-check"></div>
+            <div class="step-text">In your repo, click <strong>"Add file" → "Create new file"</strong>. Name it <code>scripts/ep01-what-is-zcash.md</code>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m5')">
+            <div class="step-check"></div>
+            <div class="step-text">Write a few lines of a draft script (it doesn't need to be complete — just a start). Use the template structure from <code>scripts/template.md</code>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m5')">
+            <div class="step-check"></div>
+            <div class="step-text">In the commit section at the bottom, select <strong>"Create a new branch"</strong> and name it <code>draft/ep01-what-is-zcash</code>. Click <strong>"Propose new file"</strong>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m5')">
+            <div class="step-check"></div>
+            <div class="step-text">GitHub will redirect you to the <strong>Open Pull Request</strong> page. Add a description like: <em>"First draft of the Zcash explainer script. Looking for feedback on the hook and tone."</em> Click <strong>"Create pull request"</strong>.</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m5')">
+            <div class="step-check"></div>
+            <div class="step-text">Share the PR link in the group. Have another participant open it and leave a comment on a specific line (click the <strong>Files changed</strong> tab → hover over a line → click the blue <strong>+</strong> button).</div>
+          </li>
+          <li class="step" onclick="toggleStep(this,'ex-m5')">
+            <div class="step-check"></div>
+            <div class="step-text">Once reviewed, click <strong>"Merge pull request"</strong> → <strong>"Confirm merge"</strong>. The script is now on main! Check the <code>scripts/</code> folder — it's there. Check the commit history — the merge is recorded.</div>
+          </li>
+        </ul>
+        <div class="exercise-progress">
+          <div class="ex-prog-bar"><div class="ex-prog-fill" id="ex-m5-prog" style="width:0%"></div></div>
+          <div class="ex-prog-label" id="ex-m5-label">0 / 6</div>
+        </div>
+        <div class="complete-badge" id="ex-m5-complete">🎉 Module complete!</div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">🚀</span>
+        <div class="callout-body">
+          <div class="callout-title">Next steps for the AV Club</div>
+          <div class="callout-text">1. Invite all club members as collaborators (Settings → Collaborators). 2. Set up a convention: every meeting gets a minutes file, every script starts as a PR. 3. Use Issues to track video ideas and open tasks. 4. Pin the repo link in your Telegram/Discord group.</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+        <button class="btn btn-primary" onclick="showSection('cheatsheet', document.querySelector('[data-section=cheatsheet]'))">View Cheat Sheet →</button>
+      </div>
+    </section>
+
+    <!-- ===== CHEAT SHEET ===== -->
+    <section id="section-cheatsheet" class="section">
+      <div class="section-badge">⚡ Quick Reference</div>
+      <h2>Git Cheat Sheet</h2>
+      <p class="section-intro">Keep this open during your first few weeks of using GitHub. Everything you need for the AV Club workflow.</p>
+
+      <h3>Core vocabulary</h3>
+      <table class="vocab-table">
+        <thead><tr><th>Term</th><th>What it means</th><th>AV Club analogy</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="vocab-term">repository</span></td>
+            <td class="vocab-def">A folder tracked by Git with full history of all changes</td>
+            <td class="vocab-analogy">The AV Club's entire filing cabinet</td>
+          </tr>
+          <tr>
+            <td><span class="vocab-term">commit</span></td>
+            <td class="vocab-def">A saved snapshot of changes with a message</td>
+            <td class="vocab-analogy">Saving a new version with a sticky note</td>
+          </tr>
+          <tr>
+            <td><span class="vocab-term">branch</span></td>
+            <td class="vocab-def">An independent copy of the repo for drafting changes</td>
+            <td class="vocab-analogy">A photocopy you mark up before editing the original</td>
+          </tr>
+          <tr>
+            <td><span class="vocab-term">main</span></td>
+            <td class="vocab-def">The default branch — the official published version</td>
+            <td class="vocab-analogy">The final, approved version of everything</td>
+          </tr>
+          <tr>
+            <td><span class="vocab-term">pull request</span></td>
+            <td class="vocab-def">A proposal to merge a branch into main, open for review</td>
+            <td class="vocab-analogy">Sending a draft script for team review</td>
+          </tr>
+          <tr>
+            <td><span class="vocab-term">merge</span></td>
+            <td class="vocab-def">Combining a branch's changes into another branch</td>
+            <td class="vocab-analogy">Incorporating approved edits into the final version</td>
+          </tr>
+          <tr>
+            <td><span class="vocab-term">clone</span></td>
+            <td class="vocab-def">Downloading a copy of the repo to your computer</td>
+            <td class="vocab-analogy">Making a local copy of the filing cabinet</td>
+          </tr>
+          <tr>
+            <td><span class="vocab-term">fork</span></td>
+            <td class="vocab-def">Your own copy of someone else's repo on GitHub</td>
+            <td class="vocab-analogy">Starting your own project based on someone else's template</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>The AV Club daily workflow</h3>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:28px 1fr;gap:8px 12px;align-items:start;">
+          <div style="background:var(--gold);color:var(--ink);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">1</div>
+          <div style="padding-top:2px;"><strong>After each meeting:</strong> Create <code>meeting-minutes/YYYY-MM-DD.md</code>, fill in the template, commit directly to main.</div>
+          <div style="background:var(--gold);color:var(--ink);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">2</div>
+          <div style="padding-top:2px;"><strong>Starting a new script:</strong> Create <code>scripts/epXX-title.md</code> on a new branch named <code>draft/epXX-title</code>. Open a PR immediately.</div>
+          <div style="background:var(--gold);color:var(--ink);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">3</div>
+          <div style="padding-top:2px;"><strong>Reviewing a script:</strong> Open the PR → Files changed → click the blue + on any line to comment. Use "Request changes" or "Approve" buttons.</div>
+          <div style="background:var(--gold);color:var(--ink);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">4</div>
+          <div style="padding-top:2px;"><strong>Script approved:</strong> Merge PR to main. Add a "published" label. Done!</div>
+        </div>
+      </div>
+
+      <h3>Good commit message examples for the AV Club</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span><span class="terminal-label">commit messages</span></div>
+        <div class="terminal-body">
+          <div class="t-prompt">✓</div><span class="t-cmd"> Add meeting minutes for 2026-03-27</span>
+          <div class="t-prompt">✓</div><span class="t-cmd"> Draft hook section for ep04 script</span>
+          <div class="t-prompt">✓</div><span class="t-cmd"> Revise ep03 intro based on review feedback</span>
+          <div class="t-prompt">✓</div><span class="t-cmd"> Add style guide to resources/</span>
+          <div class="t-prompt">✓</div><span class="t-cmd"> Update README with new team members</span>
+          <div class="t-prompt">✓</div><span class="t-cmd"> Fix broken link in ep02 script</span>
+          <div></div>
+          <div class="t-prompt">✗</div><span class="t-output"> updated stuff</span>
+          <div class="t-prompt">✗</div><span class="t-output"> fix</span>
+          <div class="t-prompt">✗</div><span class="t-output"> new file</span>
+        </div>
+      </div>
+
+      <h3>Markdown formatting quick start</h3>
+      <div class="card">
+        <table class="vocab-table" style="margin:0;">
+          <thead><tr><th>Syntax</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td><code># Heading 1</code></td><td class="vocab-def">Largest heading — use for doc title</td></tr>
+            <tr><td><code>## Heading 2</code></td><td class="vocab-def">Section heading — use for Agenda, Notes, etc.</td></tr>
+            <tr><td><code>**text**</code></td><td class="vocab-def"><strong>Bold</strong> — for names, key terms</td></tr>
+            <tr><td><code>- item</code></td><td class="vocab-def">Bullet list — for attendees, action items</td></tr>
+            <tr><td><code>- [ ] task</code></td><td class="vocab-def">Checkbox (unchecked) — for to-dos</td></tr>
+            <tr><td><code>- [x] task</code></td><td class="vocab-def">Checkbox (checked) — for done tasks</td></tr>
+            <tr><td><code>---</code></td><td class="vocab-def">Horizontal divider line</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout gold">
+        <span class="callout-icon">🔗</span>
+        <div class="callout-body">
+          <div class="callout-title">Useful links</div>
+          <div class="callout-text">
+            <a href="https://github.com/zcash/lcwg" target="_blank" style="color:var(--gold-dim);">github.com/zcash/lcwg</a> — LCWG reference repo &nbsp;·&nbsp;
+            <a href="https://docs.github.com/en/get-started" target="_blank" style="color:var(--gold-dim);">GitHub Getting Started docs</a> &nbsp;·&nbsp;
+            <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank" style="color:var(--gold-dim);">Markdown cheat sheet</a> &nbsp;·&nbsp;
+            <a href="https://desktop.github.com" target="_blank" style="color:var(--gold-dim);">GitHub Desktop</a> (for working locally)
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevSection()">← Back to Module 5</button>
+        <button class="btn btn-primary" onclick="showSection('overview', document.querySelector('[data-section=overview]'))">↩ Back to Start</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const SECTIONS = ['overview','m1','m2','m3','m4','m5','cheatsheet'];
+let currentIndex = 0;
+
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  currentIndex = SECTIONS.indexOf(id);
+  updateProgress();
+  window.scrollTo(0,0);
+}
+
+function nextSection() {
+  if (currentIndex < SECTIONS.length - 1) {
+    const next = SECTIONS[currentIndex + 1];
+    const el = document.querySelector('[data-section=' + next + ']');
+    showSection(next, el);
+  }
+}
+
+function prevSection() {
+  if (currentIndex > 0) {
+    const prev = SECTIONS[currentIndex - 1];
+    const el = document.querySelector('[data-section=' + prev + ']');
+    showSection(prev, el);
+  }
+}
+
+function updateProgress() {
+  const pct = (currentIndex / (SECTIONS.length - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  SECTIONS.forEach((s, i) => {
+    const el = document.querySelector('[data-section=' + s + ']');
+    if (!el) return;
+    if (i < currentIndex) el.classList.add('done');
+    else el.classList.remove('done');
+  });
+}
+
+const exerciseCounts = {};
+
+function toggleStep(el, exId) {
+  el.classList.toggle('done');
+  updateExercise(exId);
+}
+
+function updateExercise(exId) {
+  const container = document.getElementById('ex-' + exId);
+  if (!container) return;
+  const steps = container.querySelectorAll('.step');
+  const done = container.querySelectorAll('.step.done').length;
+  const total = steps.length;
+  const pct = total > 0 ? (done / total * 100) : 0;
+  const prog = document.getElementById('ex-' + exId + '-prog');
+  const label = document.getElementById('ex-' + exId + '-label');
+  const badge = document.getElementById('ex-' + exId + '-complete');
+  if (prog) prog.style.width = pct + '%';
+  if (label) label.textContent = done + ' / ' + total;
+  if (badge) {
+    if (done === total && total > 0) badge.classList.add('visible');
+    else badge.classList.remove('visible');
+  }
+}
+
+let timerInterval = null;
+let remaining = 60 * 60;
+let running = false;
+
+function toggleTimer() {
+  if (!running) {
+    running = true;
+    document.getElementById('timerBtn').textContent = 'PAUSE';
+    timerInterval = setInterval(() => {
+      if (remaining <= 0) { clearInterval(timerInterval); return; }
+      remaining--;
+      const m = String(Math.floor(remaining / 60)).padStart(2,'0');
+      const s = String(remaining % 60).padStart(2,'0');
+      document.getElementById('timerDisplay').textContent = m + ':' + s;
+    }, 1000);
+  } else {
+    running = false;
+    document.getElementById('timerBtn').textContent = 'START';
+    clearInterval(timerInterval);
+  }
+}
+</script>
+</body>
+</html>
