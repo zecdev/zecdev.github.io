@@ -23,15 +23,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Setup pnpm (v10) and Node.js
+      # Setup pnpm (version pinned via the "packageManager" field in package.json) and Node.js
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
 
       - name: Setup Pages
