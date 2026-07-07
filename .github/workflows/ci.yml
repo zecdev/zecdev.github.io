@@ -1,0 +1,63 @@
+name: CI
+
+# Verify the site builds and produces a publishable static export before a
+# branch can be merged into main. Mark the "build" job as a required status
+# check in branch protection so PRs cannot merge unless this passes.
+on:
+  pull_request:
+    branches: ["main"]
+  # Also run inside a merge queue if one is ever enabled.
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancel superseded runs for the same PR/ref to save CI minutes.
+concurrency:
+  group: "ci-${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (verify publishable export)
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # pnpm version comes from the "packageManager" field in package.json.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Restore Next.js cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '**/*.mdx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      # --frozen-lockfile mirrors the deploy workflow: fails if package.json and
+      # pnpm-lock.yaml disagree, so a stale lockfile is caught before merge.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build with Next.js
+        run: pnpm run build
+
+      # next.config sets output: 'export', so a successful build must emit ./out.
+      # Assert the publishable output exists rather than trusting the exit code alone.
+      - name: Verify static export was produced
+        run: |
+          test -f out/index.html || { echo "::error::out/index.html missing — static export did not build"; exit 1; }
+          echo "Static export OK: $(find out -name '*.html' | wc -l | tr -d ' ') HTML pages generated."
