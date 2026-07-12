@@ -1,4 +1,4 @@
-# A new Zcash technology Stack 
+# Z3: A new Zcash technology Stack 
 Zcash was created from a bitcoin-core fork from 2015. Zcashd has been the 
 main consensus node over 9 years. A complex machinery that combines legacy 
 C++ code from Satoshi's Era, cutting edge Zero Knowledge Proofs, RustLang
@@ -9,15 +9,15 @@ focus on making Zcash Shielded Assets a reality. But after an in-depth analysis,
 it was determined that in order to be able to keep advancing the protocol, Zcashd
 would have to be replaced because the effort of adding new features was huge and 
 deemed an inefficient allocation of the development resources of the Zcash 
-development budget.  ECC core developers made the decision of starting to 
+development budget. ZODL core developers made the decision of starting to 
 deprecate Zcashd in favor of a new technology stack composed of Zebra, a RustLang
 modern consensus node  developed by the Zcash Foundation engineering team and, 
-Zaino an indexer called developed by ZingoLabs. ECC would be in charge of 
+Zaino an indexer called developed by ZingoLabs. ZOLD would be in charge of 
 developing the full-node wallet that would connect to Zaino and Zebra called 
 Zallet.
 
 Zcashd deprecation is a cross-team ecosystem-wide effort which is targeted for
-end of 2025. 
+end of July of 2026. 
 
 ## Zcashd Deprecation is now Z^3
 
@@ -28,5 +28,40 @@ contributing section.
 
 "Zee Three" or "Zee to the Three" is an original idea from Zancas (ZingoLabs).
 
-![Zee cube image. Credits to Dismad from ZecHub](/assets/z-cubed.jpg)
-_Credits to Dismad from ZecHub_
+# Use cases
+
+## If you run a full node (no wallet)
+
+Zebra is Zcash's Consensus node completely implemented in RustLang by [Zcash Foundation](https://zfnd.org/)
+
+Zebra validates consensus and has limited indexing capabilities by design. 
+Find out more about Zebra on [Github](https://github.com/ZcashFoundation/zebra) 
+or reading [The Zebra Book](https://zebra.zfnd.org/)
+
+## If you run a service that needs Zcash indexed data
+
+Zcashd RPCs which served indexed data of the Zcash blockchain are now replaced by 
+[Zaino](https://github.com/zingolabs/zaino/). Zaino connects to a Zebra node to
+create indexed views of the finalized and non-finalized states of the Zebra node. 
+
+If you run a block explorer and depended on those RPCs you should deploy Zaino and
+Zebra and use Zaino as your indexer. 
+
+## If you ran a Zcashd wallet
+
+The Zcashd wallet is deprecated and will cease to run on July 18th 2026. 
+
+You should migrate to Zallet, the replacement for the Zcashd full-node
+wallet developed entirely in RustLang by [ZODL](https://www.zodl.com)
+
+Find out more about Zallet on its [GitHub](https://github.com/zcash/zallet) repository
+
+Although you can run Zallet standalone backed by a Zebra node we encourage you to 
+use the Z3 stack (See section below )
+
+## Zcash Z3 containerized stack 
+
+Zcash Foundation maintains the [Z3 stack](https://github.com/ZcashFoundation/z3). Which 
+comprises Zebra, Zaino and Zallet.
+
+
