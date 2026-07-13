@@ -44,14 +44,13 @@ export function HomeLanding() {
         <div className="zd-hero-inner">
           <div className="zd-badge">
             <span className="zd-badge-dot" />
-            Zcash Developer Relations · built in public
+            Privacy · built in public
           </div>
           <h1 className="zd-hero-title">
             Tools &amp; resources for the <span className="zd-amber">Zcash</span> ecosystem
           </h1>
           <p className="zd-hero-sub">
-            Projects, dashboards and documentation created and maintained in the context of the
-            Zcash Developer Relations Engineer grant. Open, transparent, and community-owned.
+            Projects, ecosystem dashboards and documentation. Open, transparent, and community-owned.
           </p>
           <div className="zd-hero-ctas">
             <Link href="/welcome" className="zd-cta-primary">
