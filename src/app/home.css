@@ -1,0 +1,290 @@
+/* ============================================================================
+   ZecDev — landing page ("/") styles. Companion to zecdev.css; matches the
+   design prototype (ZecDev Site.dc.html) hero / cards / foreword.
+   ============================================================================ */
+
+:root {
+  --zd-border-strong: #D8D2C2;
+  --zd-faint: #9A9484;
+  --zd-teal-soft: rgba(14, 148, 136, 0.12);
+  --zd-coral-soft: rgba(220, 82, 54, 0.12);
+  --zd-shadow: 0 1px 2px rgba(23, 21, 15, 0.04), 0 8px 24px rgba(23, 21, 15, 0.06);
+}
+html.dark {
+  --zd-border-strong: #3C3A2D;
+  --zd-faint: #756F60;
+  --zd-teal-soft: rgba(45, 195, 180, 0.12);
+  --zd-coral-soft: rgba(240, 113, 90, 0.12);
+  --zd-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.zd-home {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+}
+/* undo the docs-prose link underline inside the landing (zecdev.css) */
+article .zd-home a {
+  border-bottom: none;
+  color: inherit;
+}
+/* let the landing bleed to the viewport edges and end at the footer */
+article:has(.zd-home) {
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+article:has(.zd-home) > .x\:mt-16 {
+  display: none;
+}
+
+/* ---- footer (site-wide): warm surface like the prototype ------------------ */
+div[class*='x:bg-gray-100']:has(footer) {
+  background: var(--zec-surface-2) !important;
+  border-top: 1px solid var(--zec-border);
+}
+/* the theme switch lives in the navbar; drop Nextra's strip above the footer */
+div[class*='x:bg-gray-100']:has(footer) > div:has(> button[title='Change theme']),
+div[class*='x:bg-gray-100']:has(footer) > hr.nextra-border {
+  display: none;
+}
+footer {
+  color: var(--zec-muted) !important;
+}
+footer a {
+  color: var(--zec-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+footer a:hover {
+  color: var(--zec-amber-strong);
+}
+.zd-home .zd-amber { color: var(--zec-amber-strong); }
+
+/* ---- hero ---------------------------------------------------------------- */
+.zd-hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--zec-border);
+}
+.zd-hero-circuit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.zd-hero-inner {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 96px 24px 88px;
+  text-align: center;
+}
+.zd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 13px;
+  border: 1px solid var(--zec-border);
+  border-radius: 100px;
+  background: var(--zec-surface);
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  color: var(--zec-muted);
+  margin-bottom: 28px;
+}
+.zd-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--zec-teal);
+}
+.zd-hero-title {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: clamp(42px, 6.4vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin: 0 auto;
+  max-width: 14ch;
+  color: var(--zec-text);
+}
+.zd-hero-sub {
+  font-size: 19px;
+  color: var(--zec-muted);
+  max-width: 60ch;
+  margin: 24px auto 0;
+  line-height: 1.55;
+}
+.zd-hero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 38px;
+}
+.zd-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 26px;
+  border-radius: 11px;
+  background: var(--zec-amber);
+  color: #17150F !important;
+  font-weight: 600;
+  font-size: 15.5px;
+  text-decoration: none !important;
+  box-shadow: 0 6px 18px rgba(240, 180, 41, 0.35);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.zd-cta-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+.zd-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 24px;
+  border-radius: 11px;
+  background: var(--zec-surface);
+  border: 1px solid var(--zd-border-strong);
+  color: var(--zec-text) !important;
+  font-weight: 600;
+  font-size: 15.5px;
+  text-decoration: none !important;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.zd-cta-secondary:hover {
+  border-color: var(--zec-amber);
+  color: var(--zec-amber-strong) !important;
+}
+
+/* ---- start-here cards ---------------------------------------------------- */
+.zd-start {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 72px 24px;
+}
+.zd-start-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.zd-start-head h2 {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--zec-text);
+}
+.zd-start-path {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  color: var(--zd-faint);
+}
+.zd-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+  gap: 18px;
+}
+.zd-card {
+  display: block;
+  padding: 26px;
+  border: 1px solid var(--zec-border);
+  border-radius: 16px;
+  background: var(--zec-surface);
+  box-shadow: var(--zd-shadow);
+  position: relative;
+  overflow: hidden;
+  color: inherit !important;
+  text-decoration: none !important;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.zd-card:hover { transform: translateY(-3px); }
+.zd-card-amber:hover { border-color: var(--zec-amber); }
+.zd-card-teal:hover { border-color: var(--zec-teal); }
+.zd-card-coral:hover { border-color: var(--zec-coral); }
+.zd-card-plain:hover { border-color: var(--zd-border-strong); }
+.zd-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.zd-card h3 {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  font-size: 19px;
+  margin: 0 0 7px;
+  color: var(--zec-text);
+}
+.zd-card p {
+  margin: 0;
+  color: var(--zec-muted);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* ---- foreword ------------------------------------------------------------ */
+.zd-foreword {
+  border-top: 1px solid var(--zec-border);
+  background: var(--zec-surface-2);
+}
+.zd-foreword-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 72px 24px;
+}
+.zd-foreword-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--zec-amber-strong);
+  margin-bottom: 16px;
+}
+.zd-foreword blockquote {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+  color: var(--zec-text);
+  border-left: 3px solid var(--zec-amber);
+  padding-left: 24px;
+  font-style: normal;
+}
+.zd-foreword-credit {
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--zd-faint);
+}
+
+/* ---- navbar links (Docs / Dashboard / Community) -------------------------- */
+.zd-nav-link {
+  padding: 7px 13px;
+  border-radius: 9px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--zec-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.zd-nav-link:hover {
+  color: var(--zec-amber-strong);
+  background: var(--zec-amber-soft);
+}
+@media (max-width: 767px) {
+  .zd-nav-link { display: none; }
+}
