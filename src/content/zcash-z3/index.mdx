@@ -53,10 +53,10 @@ Find your situation below and follow the corresponding path.
 
 | Your current situation | Migrate to | When |
 | -- | -- | -- |
-| Full node, **no** indexing or wallet needs | [Zebra](https://github.com/ZcashFoundation/zebra) | **Now** |
+| Full node, **no** indexing or wallet needs | [Zebra](https://github.com/ZcashFoundation/zebra) [Zakura](https://github.com/zakura-core/zakura) | **Now** |
 | Service that needs **indexed** blockchain data (explorers, APIs) | [Zebra](https://github.com/ZcashFoundation/zebra) + [Zaino](https://github.com/zingolabs/zaino/) | **Now** |
 | You use the **Zcashd wallet CLI / wallet RPCs** | Zebra + [Zallet](https://github.com/zcash/zallet) (with Zaino or Zebra as backend) | **Now** — start testing immediately |
-| You **can't complete** the wallet migration before EOL and need the existing Zcashd APIs | [Zakura](https://github.com/zakura-core/zakura) + [zcashd-compat mode](https://github.com/zakura-core/zakura/blob/main/book/src/user/zcashd-compat.md) | **Temporary bridge only** — plan your Z3 migration in parallel |
+| You **can't complete** the wallet migration before EOL and need the existing Zcashd APIs | [Zakura](https://github.com/zakura-core/zakura) + [zcashd-compat mode](https://github.com/zakura-core/zakura/blob/main/book/src/user/zcashd-compat.md) | **Temporary bridge only** — plan your migration to Zallet wallet in parallel |
 
 Whatever path you take, remember: **the zcashd-compat bridge is temporary. All
 users will eventually have to migrate to Zebra and Zallet** (or Zebra / Zebra +
@@ -86,6 +86,11 @@ Zebra validates consensus and has limited indexing capabilities by design.
 
 Find out more about Zebra on [GitHub](https://github.com/ZcashFoundation/zebra) 
 or by reading [The Zebra Book](https://zebra.zfnd.org/).
+
+Zakura is a fork of Zebra maintained by Valar Group. It has different capabilities
+than Zebra, such as pruned mode, Zcashd-compat mode and fast syncs. Find out more
+about Zakura on [GitHub](https://github.com/zakura-core/zakura).
+
 
 ## If you run a service that needs Zcash indexed data
 
@@ -121,7 +126,7 @@ under Zakura's zcashd-compat mode (below), note that the **mining RPCs are
 removed from the sidecar zcashd**: block templates must be requested from
 Zakura's RPC interface, not from zcashd's.
 
-## If you need more time: Zakura + zcashd-compat mode (temporary)
+## If you need more time: Zakura + zcashd-compat mode
 
 [Zakura](https://github.com/zakura-core/zakura) is a full node developed by
 Valar Group. Its
@@ -129,6 +134,9 @@ Valar Group. Its
 is aimed at operators — typically exchanges and custodial services — that cannot
 complete their migration to Zallet before Zcashd's End-of-Life and need to keep
 their existing Zcashd integrations running in the meantime.
+
+Note: Zcashd-compat mode is meant to be a "rain check" for moving into Zakura + Zallet, 
+or Zebra + Zallet. 
 
 How it works:
 
