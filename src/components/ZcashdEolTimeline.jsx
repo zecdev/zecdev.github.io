@@ -25,13 +25,12 @@ const MILESTONES = [
     detail: 'NU6.3-ready node releases are published for mainnet.',
   },
   {
-    ts: Date.UTC(2026, 6, 18),
-    date: '~July 18th, 2026',
-    estimated: true,
+    ts: Date.UTC(2026, 6, 18, 22, 51, 43),
+    date: 'July 18th, 2026',
     title: 'zcashd End-of-Support halt',
     detail:
-      'At mainnet block 3,417,100 every remaining zcashd binary ' +
-      'automatically shuts down and refuses to restart.',
+      'At mainnet block 3,417,100 (mined 22:51 UTC) every remaining zcashd ' +
+      'binary shut down and refused to restart.',
   },
   {
     ts: Date.UTC(2026, 6, 28),

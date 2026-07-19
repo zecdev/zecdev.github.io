@@ -18,8 +18,10 @@ Zaino, an indexer developed by ZingoLabs. ZODL would be in charge of
 developing the full-node wallet that would connect to Zaino and Zebra, called 
 Zallet.
 
-Zcashd deprecation is a cross-team ecosystem-wide effort which is targeted for
-end of July of 2026. 
+Zcashd deprecation was a cross-team ecosystem-wide effort, and it is now
+complete: the final Zcashd release, **6.20.0**, reached its End-of-Life halt at
+block 3417100 on July 18th 2026, and Zcash consensus now runs on the Z3 stack.
+See the [Zcashd End-of-Life](/zcash-z3/zcashd_cycle) page for details.
 
 ## Zcashd Deprecation is now Z^3
 
@@ -32,11 +34,11 @@ contributing section.
 
 # Migration Guide: moving off Zcashd
 
-> ## ⚠️ Zcashd is shutting down
+> ## ⚠️ Zcashd has shut down
 >
-> `zcashd` is **deprecated**, will **not** support NU6.3, and its
-> **End-of-Support halt** is estimated for **July 18th 2026** at block height
-> 3417100, after which every `zcashd` node automatically shuts down.
+> `zcashd` is **deprecated** and does **not** support NU6.3. Its
+> **End-of-Support halt** occurred at block height 3417100, mined on **July 18th
+> 2026 (22:51 UTC)**, after which every `zcashd` node automatically shuts down.
 > See the [Zcashd End-of-Life page](/zcash-z3/zcashd_cycle) for the full timeline.
 
 <ZcashdEolTimeline />
@@ -104,7 +106,7 @@ ready today.**
 
 ## If you rely on the Zcashd wallet CLI
 
-The Zcashd wallet is deprecated and will cease to run on July 18th 2026. 
+The Zcashd wallet is deprecated and stopped running on July 18th 2026. 
 
 You should migrate to [Zallet](https://github.com/zcash/zallet), the replacement
 for the Zcashd full-node wallet, developed entirely in RustLang by
