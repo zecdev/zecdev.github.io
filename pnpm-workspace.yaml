@@ -1,0 +1,10 @@
+allowBuilds:
+  sharp: false
+overrides:
+  # Pin zod to the last 4.3.x: zod 4.4.x has a regression where missing
+  # required keys throw before custom validators run, breaking nextra-theme-docs'
+  # LayoutPropsSchema (children destructured out before parse).
+  # See https://github.com/shuding/nextra/issues/5008
+  zod: 4.3.6
+  # next pulls postcss <8.5.10 (XSS advisory GHSA-qx2v-qp2m-jg93); force the patched release.
+  postcss: 8.5.16

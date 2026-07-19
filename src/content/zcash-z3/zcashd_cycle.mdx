@@ -1,62 +1,17 @@
-# Zcashd version lifecycle: the Zcash ecosystem metronome.
+import { ZcashdEolTimeline } from '../../components/ZcashdEolTimeline'
 
-> **Update: Zcashd has reached End-of-Life.** The final release,
-> **Zcashd 6.20.0**, reached its automatic **End-of-Support halt** at **block
-> height 3417100**, mined on **July 18th 2026 at 22:51 UTC**, and will not
-> restart. Zcashd will **not** support the **NU6.3 ("Ironwood")** network
-> upgrade, which activates on mainnet around **July 28th 2026**. From that point
-> on, Zcash consensus runs on the Rust-based stack (Zebra + Zaino + Zallet). See
-> the official
-> [Zcashd End-of-Life notice](https://zcash.github.io/zcash/user/end-of-life.html)
-> for the migration path.
+# Zcashd End-of-Life
 
-## How the metronome worked
+> ## ⚠️ `zcashd` has reached its End of Life
+>
+> `zcashd` is **deprecated** and does **not** support NU6.3.
+> **If you do not need the `zcashd` wallet, migrate to [Zebra](https://github.com/ZcashFoundation/zebra) now.**
+> If you depend on the `zcashd` wallet, migrate your `wallet.dat` to
+> [Zallet](https://zcash.github.io/zallet/) as soon as possible. The binary's
+> **End-of-Support halt** occurred at block height 3417100, mined on **July 18th
+> 2026 at 22:51 UTC**, after which every `zcashd` node automatically shuts down
+> and refuses to restart.
 
-Every 16 weeks a Zcashd version *died* and a new one *was born*. This happened
-whether Zcashd code was being substantially changed or not. Once a version was
-released, *it couldn't be stopped*. Nobody could tell you which version of Zcashd
-to run. Zcashd was designed to stop running at a given blockheight and operators
-had to update their version to keep validating (or mining) blocks. This meant
-that if you needed to release a new version of Zcashd, for the case it required
-the current supported version to stop working, you had to wait until the
-End-of-Support (EOS) of the current version.
+See [Zcash'd book chapter](https://zcash.github.io/zcash/user/end-of-life.html) on Zcashd EOL.
 
-This meant that the feature you finished developing on a given day in Zcashd
-would only see the light of day on mainnet after the EOS date of the current
-version, when the version that included that feature became the current version
-(provided it didn’t need a transition cycle). Sometimes that could mean a day,
-others it could mean 16 weeks. That’s how this metronome kept a decentralized,
-permissionless and censorship-resistant protocol coordinated in terms of
-software releases.
-
-![Zcash release cycle](/assets/zcashd_release_cycle.png)
-
-## The final cycle
-
-Zcashd deprecation was a cross-team, ecosystem-wide effort, and it is now
-complete. The **End-of-Life** version of Zcashd, **6.20.0**, was created and
-deployed with an automatic End-of-Support halt at **block height 3417100**, which
-was mined on **July 18th 2026 at 22:51 UTC**
-(`00000000001d20ddc7ae13b910c1a12929f753ae779a3c62207e53bc0d30d52f`). Once the
-network passed that block, every Zcashd 6.20.0 binary shut down and refused to
-restart.
-
-That halt was deliberately scheduled *before* the **NU6.3 ("Ironwood")** mainnet
-activation (around **July 28th 2026**), which Zcashd does not support. Timing the
-halt ahead of the upgrade guarantees that no legacy Zcashd nodes remain on the
-network when NU6.3 activates, leaving Zcash consensus running entirely on the
-Rust-based stack.
-
-Node operators and miners who don't rely on the Zcashd wallet should migrate to
-**Zebra**. Those who depend on Zcashd's wallet functionality should move to
-**Zallet**, which supports migrating existing `wallet.dat` files. Full details
-are in the official
-[Zcashd End-of-Life notice](https://zcash.github.io/zcash/user/end-of-life.html).
-
-## Towards a friction-less Network Upgrade process
-
-Zcash core developers are researching ways to reduce the impact of Network
-Upgrades that include transaction changes. This means less hassle for wallet and
-infrastructure providers and a higher pace for smaller updates even if they do
-include transaction format changes. Core developers are committed to improve UX
-for all ecosystem actors including the most tech savvy ones.
+<ZcashdEolTimeline />

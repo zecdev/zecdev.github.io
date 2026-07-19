@@ -1,0 +1,174 @@
+/* ============================================================================
+   ZecDev — Nextra theme customization
+   Import from src/app/layout.jsx  (after nextra-theme-docs styles load).
+   Palette derived from the ZecDev chip logo.
+   ============================================================================ */
+
+:root {
+  /* ---- brand knobs: change these to retune the whole site ---- */
+  --zec-amber:        #F0B429;
+  --zec-amber-strong: #B67D08;   /* readable amber for text/links on light bg */
+  --zec-amber-soft:   #FCEFC8;   /* active-nav / highlight wash */
+  --zec-teal:         #0E9488;
+  --zec-coral:        #DC5236;
+
+  /* warm neutral surfaces (avoid pure white/grey) */
+  --zec-bg:        #FBFAF6;
+  --zec-surface:   #FFFFFF;
+  --zec-surface-2: #F4F1E8;
+  --zec-border:    #E8E3D6;
+  --zec-text:      #17150F;
+  --zec-muted:     #6E685A;
+
+  /* map onto Nextra's own tokens */
+  --nextra-bg: 251, 250, 246;
+}
+
+html.dark {
+  --zec-amber-strong: #F4C13C;
+  --zec-amber-soft:   rgba(244, 193, 60, 0.12);
+  --zec-teal:         #2DC3B4;
+  --zec-coral:        #F0715A;
+  --zec-bg:        #14130F;
+  --zec-surface:   #1C1B15;
+  --zec-surface-2: #23211A;
+  --zec-border:    #302E24;
+  --zec-text:      #F6F3E8;
+  --zec-muted:     #ABA491;
+  --nextra-bg: 20, 19, 15;
+}
+
+/* ---- base type ---------------------------------------------------------- */
+html, body {
+  background: var(--zec-bg);
+  color: var(--zec-text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-feature-settings: "cv05", "ss01";
+}
+::selection { background: rgba(240, 180, 41, 0.35); }
+
+/* display font for all headings + the navbar wordmark */
+h1, h2, h3, h4, .nextra-navbar b,
+article h1, article h2, article h3 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+article h1 { font-weight: 700; letter-spacing: -0.03em; }
+
+code, kbd, pre, .nextra-code, :not(pre) > code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+/* ---- navbar ------------------------------------------------------------- */
+.nextra-navbar {
+  background: color-mix(in srgb, var(--zec-bg) 82%, transparent);
+  border-bottom: 1px solid var(--zec-border);
+  backdrop-filter: saturate(180%) blur(14px);
+}
+/* active + hovered nav links use amber */
+.nextra-navbar a[aria-current="true"],
+.nextra-navbar a:hover {
+  color: var(--zec-amber-strong) !important;
+}
+
+/* ---- sidebar ------------------------------------------------------------ */
+.nextra-sidebar { border-right: 1px solid var(--zec-border); }
+.nextra-sidebar a.\_font-medium,           /* active item (Nextra hashed class) */
+.nextra-sidebar li.active > a,
+.nextra-sidebar a[data-active="true"] {
+  background: var(--zec-amber-soft) !important;
+  color: var(--zec-amber-strong) !important;
+  font-weight: 600;
+}
+.nextra-sidebar a:hover { color: var(--zec-amber-strong); }
+/* section labels in mono caps */
+.nextra-sidebar .\_uppercase,
+.nextra-sidebar h3 {
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+/* ---- links in prose ----------------------------------------------------- */
+.nextra-content a,
+article a:not(.nextra-card) {
+  color: var(--zec-amber-strong);
+  text-decoration: none;
+  border-bottom: 1px solid var(--zec-amber);
+  transition: color .15s, border-color .15s;
+}
+.nextra-content a:hover { border-bottom-color: var(--zec-amber-strong); }
+
+/* ---- right-hand TOC ----------------------------------------------------- */
+.nextra-toc .\_uppercase { font-family: var(--font-mono), monospace; }
+.nextra-toc a:hover,
+.nextra-toc a[aria-current="true"] { color: var(--zec-amber-strong); }
+
+/* ---- tables (dashboard, wishlist, explorers) ---------------------------- */
+.nextra-content table {
+  border: 1px solid var(--zec-border);
+  border-radius: 14px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(23,21,15,.04), 0 8px 24px rgba(23,21,15,.06);
+}
+.nextra-content th {
+  background: var(--zec-surface-2);
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px; font-weight: 500;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--zec-muted);
+  text-align: left;
+}
+.nextra-content th, .nextra-content td {
+  padding: 13px 18px;
+  border: none;
+  border-top: 1px solid var(--zec-border);
+}
+.nextra-content thead th { border-top: none; }
+.nextra-content tbody tr:hover td { background: var(--zec-surface-2); }
+
+/* ---- code blocks -------------------------------------------------------- */
+.nextra-code pre,
+.nextra-content pre {
+  background: var(--zec-surface-2) !important;
+  border: 1px solid var(--zec-border);
+  border-radius: 12px;
+}
+:not(pre) > code {
+  background: var(--zec-surface-2);
+  border: 1px solid var(--zec-border);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: .86em;
+}
+
+/* ---- blockquote (maintainer foreword) ----------------------------------- */
+.nextra-content blockquote {
+  border-left: 3px solid var(--zec-amber);
+  font-family: var(--font-display), sans-serif;
+  font-style: normal;
+  color: var(--zec-text);
+}
+
+/* ---- Nextra <Cards> ----------------------------------------------------- */
+.nextra-card {
+  border: 1px solid var(--zec-border) !important;
+  border-radius: 16px !important;
+  background: var(--zec-surface);
+  transition: transform .18s, border-color .18s;
+}
+.nextra-card:hover {
+  border-color: var(--zec-amber) !important;
+  transform: translateY(-3px);
+}
+
+/* ---- buttons / primary CTA (if you use Nextra's Button or custom) -------- */
+.zec-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 48px; padding: 0 24px; border-radius: 11px;
+  background: var(--zec-amber); color: #17150F;
+  font-weight: 600; text-decoration: none; border: none;
+  box-shadow: 0 6px 18px rgba(240,180,41,.35);
+}
+.zec-cta:hover { filter: brightness(1.05); }

@@ -1,6 +1,8 @@
-# A new Zcash technology Stack 
-Zcash was created from a bitcoin-core fork from 2015. Zcashd has been the 
-main consensus node over 9 years. A complex machinery that combines legacy 
+import { ZcashdEolTimeline } from '../../components/ZcashdEolTimeline'
+
+# Z3: A new Zcash technology Stack 
+Zcash was created from a bitcoin-core fork in 2015. Zcashd has been the 
+main consensus node for over 9 years. A complex machinery that combines legacy 
 C++ code from Satoshi's Era, cutting edge Zero Knowledge Proofs, RustLang
 code, a full-node wallet, mining and blockchain indexing RPCs. 
 
@@ -9,27 +11,171 @@ focus on making Zcash Shielded Assets a reality. But after an in-depth analysis,
 it was determined that in order to be able to keep advancing the protocol, Zcashd
 would have to be replaced because the effort of adding new features was huge and 
 deemed an inefficient allocation of the development resources of the Zcash 
-development budget.  ECC core developers made the decision of starting to 
+development budget. ZODL core developers made the decision of starting to 
 deprecate Zcashd in favor of a new technology stack composed of Zebra, a RustLang
-modern consensus node  developed by the Zcash Foundation engineering team and, 
-Zaino an indexer called developed by ZingoLabs. ECC would be in charge of 
-developing the full-node wallet that would connect to Zaino and Zebra called 
+modern consensus node developed by the Zcash Foundation engineering team, and 
+Zaino, an indexer developed by ZingoLabs. ZODL would be in charge of 
+developing the full-node wallet that would connect to Zaino and Zebra, called 
 Zallet.
 
 Zcashd deprecation was a cross-team ecosystem-wide effort, and it is now
 complete: the final Zcashd release, **6.20.0**, reached its End-of-Life halt at
 block 3417100 on July 18th 2026, and Zcash consensus now runs on the Z3 stack.
-See the
-[Zcashd version lifecycle](/zcash-z3/zcashd_cycle) page for details.
+See the [Zcashd End-of-Life](/zcash-z3/zcashd_cycle) page for details.
 
 ## Zcashd Deprecation is now Z^3
 
-Zcashd Deprecation was deemed a negative narrative. In order to focus in the 
-positive aspects of the outcomes of this proces, it was then renamed to 
+Zcashd Deprecation was deemed a negative narrative. In order to focus on the 
+positive aspects of the outcomes of this process, it was then renamed to 
 Z^3 (Zebra x Zaino x Zallet). If you'd like to contribute to Z3, check out the 
 contributing section.
 
 "Zee Three" or "Zee to the Three" is an original idea from Zancas (ZingoLabs).
 
-![Zee cube image. Credits to Dismad from ZecHub](/assets/z-cubed.jpg)
-_Credits to Dismad from ZecHub_
+# Migration Guide: moving off Zcashd
+
+> ## ⚠️ Zcashd has shut down
+>
+> `zcashd` is **deprecated** and does **not** support NU6.3. Its
+> **End-of-Support halt** occurred at block height 3417100, mined on **July 18th
+> 2026 (22:51 UTC)**, after which every `zcashd` node automatically shuts down.
+> See the [Zcashd End-of-Life page](/zcash-z3/zcashd_cycle) for the full timeline.
+
+<ZcashdEolTimeline />
+
+This guide condenses the next steps for everyone still running Zcashd — node
+operators, miners, exchanges, and services that depend on the Zcashd wallet CLI.
+Find your situation below and follow the corresponding path.
+
+> **Note:** This page is a community resource. It is not associated with, or
+> endorsed by, the Zcash Foundation, ZODL, ZingoLabs, Valar Group, or any other
+> Zcash organization.
+
+## Which path should I take?
+
+| Your current situation | Migrate to | When |
+| -- | -- | -- |
+| Full node, **no** indexing or wallet needs | [Zebra](https://github.com/ZcashFoundation/zebra) [Zakura](https://github.com/zakura-core/zakura) | **Now** |
+| Service that needs **indexed** blockchain data (explorers, APIs) | [Zebra](https://github.com/ZcashFoundation/zebra) + [Zaino](https://github.com/zingolabs/zaino/) | **Now** |
+| You use the **Zcashd wallet CLI / wallet RPCs** | Zebra + [Zallet](https://github.com/zcash/zallet) (with Zaino or Zebra as backend) | **Now** — start testing immediately |
+| You **can't complete** the wallet migration before EOL and need the existing Zcashd APIs | [Zakura](https://github.com/zakura-core/zakura) + [zcashd-compat mode](https://github.com/zakura-core/zakura/blob/main/book/src/user/zcashd-compat.md) | **Temporary bridge only** — plan your migration to Zallet wallet in parallel |
+
+Whatever path you take, remember: **the zcashd-compat bridge is temporary. All
+users will eventually have to migrate to Zebra and Zallet** (or Zebra / Zebra +
+Zaino if they don't need a wallet).
+
+## Before you migrate: back up everything
+
+- **Always back up your current data.** Before touching anything, make copies of
+  your Zcashd data directory — especially your `wallet.dat` — and store them
+  somewhere safe. A failed migration with a good backup is an inconvenience;
+  without one, it can mean losing funds.
+- **Always back up your Zebra chain state before running a migration.** Copy the
+  Zebra state directory before pointing new components (Zaino, Zallet) at it or
+  upgrading versions, so you can roll back without a full resync.
+- **Community-maintained snapshots for Zebra are available.** If you need to
+  (re)build a Zebra node quickly, daily checksum-verified mainnet snapshots can
+  bring it close to the chain tip without syncing from scratch. See the
+  [Community Maintained Snapshots](/zcash-z3/resources#community-maintained-snapshots)
+  entry in the Resources section.
+
+## If you run a full node (no wallet)
+
+Zebra is Zcash's consensus node, completely implemented in RustLang by the [Zcash Foundation](https://zfnd.org/).
+
+Zebra validates consensus and has limited indexing capabilities by design.
+**You can move to Zebra today** — no other components required.
+
+Find out more about Zebra on [GitHub](https://github.com/ZcashFoundation/zebra) 
+or by reading [The Zebra Book](https://zebra.zfnd.org/).
+
+Zakura is a fork of Zebra maintained by Valar Group. It has different capabilities
+than Zebra, such as pruned mode, Zcashd-compat mode and fast syncs. Find out more
+about Zakura on [GitHub](https://github.com/zakura-core/zakura).
+
+
+## If you run a service that needs Zcash indexed data
+
+Zcashd RPCs which served indexed data of the Zcash blockchain are now replaced by 
+[Zaino](https://github.com/zingolabs/zaino/). Zaino connects to a Zebra node to
+create indexed views of the finalized and non-finalized states of the Zebra node. 
+
+If you run a block explorer or any service that depended on those RPCs, you
+should deploy Zebra and Zaino and use Zaino as your indexer. **This stack is
+ready today.**
+
+## If you rely on the Zcashd wallet CLI
+
+The Zcashd wallet is deprecated and stopped running on July 18th 2026. 
+
+You should migrate to [Zallet](https://github.com/zcash/zallet), the replacement
+for the Zcashd full-node wallet, developed entirely in RustLang by
+[ZODL](https://www.zodl.com). Zallet runs against a Zebra node and lets you opt
+for one of two backends:
+
+- **Zaino** — the recommended setup and the full Z3 stack (Zebra x Zaino x Zallet).
+- **Zebra (zebrad) directly** — a standalone setup without the indexer.
+
+Start by migrating your `wallet.dat` and testing your integration against
+Zallet **as soon as possible**. Find out more in the
+[Zallet book](https://zcash.github.io/zallet/) and its
+[GitHub](https://github.com/zcash/zallet) repository.
+
+## If you are a miner
+
+Migrate your node to Zebra and request block templates from it. If you operate
+under Zakura's zcashd-compat mode (below), note that the **mining RPCs are
+removed from the sidecar zcashd**: block templates must be requested from
+Zakura's RPC interface, not from zcashd's.
+
+## If you need more time: Zakura + zcashd-compat mode
+
+[Zakura](https://github.com/zakura-core/zakura) is a full node developed by
+Valar Group. Its
+[zcashd-compat mode](https://github.com/zakura-core/zakura/blob/main/book/src/user/zcashd-compat.md)
+is aimed at operators — typically exchanges and custodial services — that cannot
+complete their migration to Zallet before Zcashd's End-of-Life and need to keep
+their existing Zcashd integrations running in the meantime.
+
+Note: Zcashd-compat mode is meant to be a "rain check" for moving into Zakura + Zallet, 
+or Zebra + Zallet. 
+
+How it works:
+
+- **Zakura faces the network.** Zakura is the consensus-validating node connected
+  to the Zcash peer-to-peer network.
+- **Zcashd becomes a sidecar.** A patched zcashd fork runs alongside it, making a
+  single outbound connection to Zakura and accepting **no inbound peer-to-peer
+  connections**. Your zcashd node is no longer exposed to the P2P network.
+- **Your existing APIs keep working.** The zcashd wallet RPCs (transparent and
+  Sapling), local block files, chainstate, and ZMQ notifications stay unchanged.
+- **Extended End-of-Life.** The compat-mode zcashd fork keeps running **past
+  NU6.3 activation**, which is stock Zcashd's End-of-Life as indicated in
+  [Zcashd's documentation](https://zcash.github.io/zcash/user/end-of-life.html).
+
+### Limitations you must plan around
+
+- **Ironwood pool: permanently unsupported** in the sidecar zcashd.
+- **Orchard: rejected after NU6.3 activation.** Orchard operations work before
+  activation and return errors afterwards.
+- **Transparent and Sapling operations are unaffected.**
+- Mining RPCs are removed from the sidecar zcashd (use Zakura's RPC instead).
+
+### This is a temporary solution
+
+The zcashd-compat mode buys you time; it is **not** a destination. **All users
+will have to migrate to Zebra and Zallet** for wallet CLI functionality — or to
+Zebra (optionally with Zaino) if they don't require a wallet. Use the extra
+runway to execute your Z3 migration, not to postpone it.
+
+## Testing your migration on testnet
+
+A Zcash testnet faucet with **Ironwood support** is available at
+[fauzec.com](https://fauzec.com/). Use it to fund test wallets and validate your
+Zallet integration — including Orchard and Ironwood flows — before moving to
+mainnet.
+
+## Zcash Z3 containerized stack 
+
+Zcash Foundation maintains the [Z3 stack](https://github.com/ZcashFoundation/z3), which 
+comprises Zebra, Zaino and Zallet.
